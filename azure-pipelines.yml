@@ -22,7 +22,6 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
     feedsToUse: 'select'
-    vstsFeed: '7a124f36-f58f-4fba-83fa-320bd1c605a7'
 
 - task: VersionDotNetCoreAssemblies@2
   displayName: 'Update version'
