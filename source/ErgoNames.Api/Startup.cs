@@ -1,3 +1,4 @@
+using Azure.Data.Tables;
 using ErgoNames.Api.Data;
 using ErgoNames.Api.Models.Configuration;
 using ErgoNames.Api.Security;
@@ -30,12 +31,11 @@ namespace ErgoNames.Api
 
             services.AddSingleton(nameApiConfiguration);
 
-            var storageConnectionString = new StorageConnectionString
-            {
-                ConnectionString = Configuration.GetConnectionString("AzureStorage")
-            };
+            string tableName = nameApiConfiguration.NetworkType == NetworkType.Mainnet ? "mainnetapi" : "testnetapi";
 
-            services.AddSingleton(storageConnectionString);
+            string connectionString = Configuration.GetConnectionString("AzureStorage");
+
+            services.AddSingleton<TableClient>(new TableClient(connectionString, tableName));
 
             services.AddTransient<IErgoExplorerClient, ErgoExplorerClient>();
             services.AddTransient<ITableRepository, TableRepository>();

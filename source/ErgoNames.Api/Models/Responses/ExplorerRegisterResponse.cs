@@ -5,12 +5,12 @@ namespace ErgoNames.Api.Models.Responses
     public class ExplorerRegisterResponse
     {
         [JsonPropertyName("serializedValue")]
-        public string SerializedValue { get; set; }
+        public string? SerializedValue { get; set; }
 
         [JsonPropertyName("sigmaType")]
-        public string SigmaType { get; set; }
+        public string? SigmaType { get; set; }
 
         [JsonPropertyName("renderedValue")]
-        public string RenderedValue { get; set; }
+        public string? RenderedValue { get; set; }
     }
 }

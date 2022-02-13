@@ -15,25 +15,16 @@ namespace ErgoNames.Api.Data
 
     public class TableRepository : ITableRepository
     {
-        private readonly TableServiceClient tableClient;
-        private readonly ErgoNameApiConfiguration configuration;
+        private readonly TableClient tableClient;
 
-        public TableRepository(ErgoNameApiConfiguration configuration, StorageConnectionString storageConnectionString)
+        public TableRepository(TableClient tableClient)
         {
-            this.configuration = configuration;
-            tableClient = new TableServiceClient(storageConnectionString.ConnectionString);
+            this.tableClient = tableClient;
         }
 
         public async Task InitializeTables()
         {
-            if (configuration.NetworkType == NetworkType.Testnet)
-            {
-                await tableClient.CreateTableIfNotExistsAsync("testnetapi");
-            }
-            else
-            {
-                await tableClient.CreateTableIfNotExistsAsync("mainnetapi");
-            }
+            await tableClient.CreateIfNotExistsAsync();
         }
 
         public Task ReserveName(string name)

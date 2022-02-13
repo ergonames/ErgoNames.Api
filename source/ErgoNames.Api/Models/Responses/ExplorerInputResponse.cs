@@ -6,45 +6,45 @@ namespace ErgoNames.Api.Models.Responses
     public class ExplorerInputResponse
     {
         [JsonPropertyName("boxId")]
-        public string BoxId { get; set; }
+        public string? BoxId { get; set; }
 
         [JsonPropertyName("value")]
-        public long Value { get; set; }
+        public long? Value { get; set; }
 
         [JsonPropertyName("index")]
-        public long Index { get; set; }
+        public long? Index { get; set; }
 
         [JsonPropertyName("spendingProof")]
-        public string SpendingProof { get; set; }
+        public string? SpendingProof { get; set; }
 
         [JsonPropertyName("outputBlockId")]
-        public string OutputBlockId { get; set; }
+        public string? OutputBlockId { get; set; }
 
         [JsonPropertyName("outputTransactionId")]
-        public string OutputTransactionId { get; set; }
+        public string? OutputTransactionId { get; set; }
 
         [JsonPropertyName("outputIndex")]
-        public long OutputIndex { get; set; }
+        public long? OutputIndex { get; set; }
 
         [JsonPropertyName("outputGlobalIndex")]
-        public long OutputGlobalIndex { get; set; }
+        public long? OutputGlobalIndex { get; set; }
 
         [JsonPropertyName("outputCreatedAt")]
-        public long OutputCreatedAt { get; set; }
+        public long? OutputCreatedAt { get; set; }
 
         [JsonPropertyName("outputSettledAt")]
-        public long OutputSettledAt { get; set; }
+        public long? OutputSettledAt { get; set; }
 
         [JsonPropertyName("ergoTree")]
-        public string ErgoTree { get; set; }
+        public string? ErgoTree { get; set; }
 
         [JsonPropertyName("address")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [JsonPropertyName("assets")]
-        public IEnumerable<ExplorerAssetResponse> Assets { get; set; }
+        public IEnumerable<ExplorerAssetResponse>? Assets { get; set; }
 
         [JsonPropertyName("additionalRegisters")]
-        public ExplorerAdditionalRegistersResponse AdditionalRegisters { get; set; }
+        public ExplorerAdditionalRegistersResponse? AdditionalRegisters { get; set; }
     }
 }

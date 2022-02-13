@@ -6,36 +6,36 @@ namespace ErgoNames.Api.Models.Responses
     public class ExplorerTransactionResponse
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("blockId")]
-        public string BlockId { get; set; }
+        public string? BlockId { get; set; }
 
         [JsonPropertyName("inclusionHeight")]
-        public long InclusionHeight { get; set; }
+        public long? InclusionHeight { get; set; }
 
         [JsonPropertyName("timestamp")]
-        public long Timestamp { get; set; }
+        public long? Timestamp { get; set; }
 
         [JsonPropertyName("index")]
-        public long Index { get; set; }
+        public long? Index { get; set; }
 
         [JsonPropertyName("globalIndex")]
-        public long GlobalIndex { get; set; }
+        public long? GlobalIndex { get; set; }
 
         [JsonPropertyName("numConfirmations")]
-        public long NumConfirmations { get; set; }
+        public long? NumConfirmations { get; set; }
 
         [JsonPropertyName("inputs")]
-        public IEnumerable<ExplorerInputResponse> Inputs { get; set; }
+        public IEnumerable<ExplorerInputResponse>? Inputs { get; set; }
 
         [JsonPropertyName("dataInputs")]
-        public object[] DataInputs { get; set; }
+        public object[]? DataInputs { get; set; }
 
         [JsonPropertyName("outputs")]
-        public IEnumerable<ExplorerOutputResponse> Outputs { get; set; }
+        public IEnumerable<ExplorerOutputResponse>? Outputs { get; set; }
 
         [JsonPropertyName("size")]
-        public long Size { get; set; }
+        public long? Size { get; set; }
     }
 }

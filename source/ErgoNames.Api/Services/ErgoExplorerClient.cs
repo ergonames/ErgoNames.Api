@@ -30,8 +30,7 @@ namespace ErgoNames.Api.Services
         {
             var response = await explorerApiClient.GetAsync(queryString);
             var serializedResponseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<T>(serializedResponseContent);
-            return result;
+            return JsonSerializer.Deserialize<T>(serializedResponseContent) ?? throw new InvalidCastException("Cannot deserialize Json");
         }
     }
 }

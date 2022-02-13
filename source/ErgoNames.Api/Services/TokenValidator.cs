@@ -35,14 +35,14 @@ namespace ErgoNames.Api.Services
 
         public bool MintTxWasCreatedByMintAddress(ExplorerTransactionResponse mintTx, string mintAddress)
         {
-            return mintTx.Inputs.First().Address == mintAddress;
+            return mintTx.Inputs != null && mintTx.Inputs.First().Address == mintAddress;
         }
 
         public async Task<string?> ResolveTokenAddressAsync(ExplorerAssetResponse token)
         {
             var unspentBoxUri = $"boxes/unspent/byTokenId/{token.Id}";
             var unspentBox = await explorerClient.GetAsync<ExplorerResponseWrapper<ExplorerBoxResponse>>(unspentBoxUri);
-            var holderAddress = unspentBox.Items.Any() ? unspentBox.Items.First().Address : null;
+            var holderAddress = unspentBox.Items != null && unspentBox.Items.Any() ? unspentBox.Items.First().Address : null;
             return holderAddress;
         }
 

@@ -12,7 +12,8 @@ namespace ErgoNames.Api.Services
 
         public TokenResolver(ErgoNameApiConfiguration configuration, ITokenValidator tokenValidator)
         {
-            mintAddress = configuration.IssuingAddress;
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            mintAddress = configuration.IssuingAddress ?? "";
             this.tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
         }
 
@@ -29,7 +30,7 @@ namespace ErgoNames.Api.Services
             var mapOfTokenIdByMintTx = new ConcurrentDictionary<string, ExplorerAssetResponse>();
 
             // Search token by name
-            var tokens = await tokenValidator.SearchTokenByNameAsync(tokenName);
+            var tokens = (await tokenValidator.SearchTokenByNameAsync(tokenName)).ToList();
             if (!tokens.Any()) return null;
 
             // Get issuance box for each result
@@ -37,6 +38,7 @@ namespace ErgoNames.Api.Services
             await Parallel.ForEachAsync(tokens, parallelOptions, async (token, cancellationToken) =>
             {
                 var issuanceBox = await tokenValidator.LookUpIssuanceBox(token);
+                if (issuanceBox == null) throw new Exception("Unable to determine issuance box");
                 issuanceBoxes.Add(issuanceBox);
                 mapOfTokenIdByMintTx.TryAdd(issuanceBox.TransactionId, token);
             });
@@ -62,7 +64,7 @@ namespace ErgoNames.Api.Services
                 {
                     var token = mapOfTokenIdByMintTx[tx.Id];
                     authenticTokens.Add(token);
-                };
+                }
             });
 
             // Resolve address of wallet holding the token.
