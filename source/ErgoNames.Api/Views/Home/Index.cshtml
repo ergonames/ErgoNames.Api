@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>CloudScope API</title>
+</head>
+<body>
+<style>
+    body {
+        font-family: 'Segoe UI',wf_segoe-ui_normal,helvetica,arial,sans-serif;
+        line-height: 20px;
+    }
+</style>
+
+<h2>api.ergonames.com</h2>
+
+<p>For more information, please visit <a href="https://www.ergonames.com">https://www.ergonames.com</a>.</p>
+
+<small style="margin-top: 100px">Build: @System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() | Date: @File.GetLastWriteTime(@System.Reflection.Assembly.GetExecutingAssembly().Location).ToShortDateString()</small>
+</body>
+</html>

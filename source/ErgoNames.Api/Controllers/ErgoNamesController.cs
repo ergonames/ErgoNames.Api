@@ -37,10 +37,11 @@ namespace ErgoNames.Api.Controllers
             catch (Exception e)
             {
                 ErrorResponse errorResponse = new ErrorResponse();
-                Error error = new Error();
+                Error error = new();
                 error.Status = "400";
                 error.Title = "Bad Request";
                 error.Detail = e.Message;
+                errorResponse.Errors.Add(error);
 
                 return BadRequest(errorResponse);
             }
@@ -55,10 +56,29 @@ namespace ErgoNames.Api.Controllers
                 await repository.ReserveName(name);
                 return Ok();
             }
+            catch (Azure.RequestFailedException e)
+            {
+                logger.LogError(e, "Error reserving name {name}", name);
+                ErrorResponse errorResponse = new ErrorResponse();
+                Error error = new();
+                error.Status = e.Status.ToString();
+                error.Title = "Bad Request";
+                error.Detail = e.ErrorCode;
+                errorResponse.Errors.Add(error);
+
+                return BadRequest(errorResponse);
+            }
             catch (Exception e)
             {
                 logger.LogError(e, "Error reserving name {name}", name);
-                return BadRequest();
+                ErrorResponse errorResponse = new ErrorResponse();
+                Error error = new();
+                error.Status = "400";
+                error.Title = "Bad Request";
+                error.Detail = e.Message;
+                errorResponse.Errors.Add(error);
+
+                return BadRequest(errorResponse);
             }
         }
 
@@ -67,8 +87,24 @@ namespace ErgoNames.Api.Controllers
         public async Task<IActionResult> Release(string name)
         {
             logger.LogDebug("Releasing name {name}", name);
-            await repository.ReleaseName(name);
-            return NoContent();
+
+            try
+            {
+                await repository.ReleaseName(name);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error releasing name {name}", name);
+                ErrorResponse errorResponse = new ErrorResponse();
+                Error error = new();
+                error.Status = "400";
+                error.Title = "Bad Request";
+                error.Detail = e.Message;
+                errorResponse.Errors.Add(error);
+
+                return BadRequest(errorResponse);
+            }
         }
     }
 }
