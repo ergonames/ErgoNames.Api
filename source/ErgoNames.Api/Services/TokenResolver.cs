@@ -9,12 +9,14 @@ namespace ErgoNames.Api.Services
     {
         private readonly string mintAddress;
         private readonly ITokenValidator tokenValidator;
+        private readonly ILogger<TokenResolver> logger;
 
-        public TokenResolver(ErgoNameApiConfiguration configuration, ITokenValidator tokenValidator)
+        public TokenResolver(ErgoNameApiConfiguration configuration, ITokenValidator tokenValidator, ILogger<TokenResolver> logger)
         {
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             mintAddress = configuration.IssuingAddress ?? "";
             this.tokenValidator = tokenValidator ?? throw new ArgumentNullException(nameof(tokenValidator));
+            this.logger = logger;
         }
 
         public async Task<string?> ResolveTokenNameToAddressAsync(string tokenName)
@@ -30,16 +32,18 @@ namespace ErgoNames.Api.Services
             var mapOfTokenIdByMintTx = new ConcurrentDictionary<string, ExplorerAssetResponse>();
 
             // Search token by name
-            var tokens = (await tokenValidator.SearchTokenByNameAsync(tokenName)).ToList();
+            List<ExplorerAssetResponse> tokens = (await tokenValidator.SearchTokenByNameAsync(tokenName)).ToList();
+            logger.LogDebug("{Count} tokens located for token name {Name}", tokens.Count, tokenName);
             if (!tokens.Any()) return null;
 
             // Get issuance box for each result
             var issuanceBoxes = new ConcurrentBag<ExplorerBoxResponse>();
             await Parallel.ForEachAsync(tokens, parallelOptions, async (token, cancellationToken) =>
             {
-                var issuanceBox = await tokenValidator.LookUpIssuanceBox(token);
+                ExplorerBoxResponse issuanceBox = await tokenValidator.LookUpIssuanceBox(token);
                 if (issuanceBox == null) throw new Exception("Unable to determine issuance box");
                 issuanceBoxes.Add(issuanceBox);
+                logger.LogDebug("Issuance box transaction {Transaction} found for token {Name}", issuanceBox.TransactionId, token.Name);
                 mapOfTokenIdByMintTx.TryAdd(issuanceBox.TransactionId, token);
             });
             if (!issuanceBoxes.Any()) return null;
@@ -59,11 +63,15 @@ namespace ErgoNames.Api.Services
             var authenticTokens = new ConcurrentBag<ExplorerAssetResponse>();
             Parallel.ForEach(mintTxs, parallelOptions, (tx, cancellationToken) =>
             {
-                var mintTxWasCreatedByMintAddress = tokenValidator.MintTxWasCreatedByMintAddress(tx, mintAddress);
+                bool mintTxWasCreatedByMintAddress = tokenValidator.MintTxWasCreatedByMintAddress(tx, mintAddress);
                 if (mintTxWasCreatedByMintAddress)
                 {
                     var token = mapOfTokenIdByMintTx[tx.Id];
                     authenticTokens.Add(token);
+                }
+                else
+                {
+                    logger.LogDebug("Token transaction {Id} was created by mint address {Address}, which is not ours.", tx.Id, mintAddress);
                 }
             });
 
@@ -73,6 +81,10 @@ namespace ErgoNames.Api.Services
             await Parallel.ForEachAsync(authenticTokens, parallelOptions, async (token, cancellationToken) =>
             {
                 var response = await tokenValidator.ResolveTokenAddressAsync(token);
+                if (string.IsNullOrEmpty(response))
+                {
+                    logger.LogDebug("Null response received to indicate which wallet is holding token {Token} with ID {Id}", token.Name, token.TokenId);
+                }
                 walletAddress = response ?? null;
             });
 

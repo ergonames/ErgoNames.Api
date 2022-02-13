@@ -12,9 +12,17 @@ namespace ErgoNames.Api
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
                 .AddEnvironmentVariables()
                 .Build();
+            
+            var logDirectory = configuration["LogDirectory"] ?? "logs";
 
-            var logger = new LoggerConfiguration()
+            Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .WriteTo.Console()
+                .WriteTo.File($"{logDirectory}\\ergo-api.txt",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 14,
+                    buffered: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(30))
                 .CreateLogger();
 
             try
