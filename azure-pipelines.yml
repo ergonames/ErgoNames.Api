@@ -44,7 +44,7 @@ steps:
     publishWebProjects: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\ErgoNode.Api.zip'
-    ArtifactName: Api
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
