@@ -36,10 +36,9 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
  
-
-- task: PublishBuildArtifacts@1
+ 
+- task: DotNetCoreCLI@2
   displayName: 'Publish API'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\ErgoNode.Api.zip'
-    ArtifactName: API
- 
+    command: 'publish'
+    publishWebProjects: true
