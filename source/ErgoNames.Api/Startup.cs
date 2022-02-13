@@ -51,7 +51,7 @@ namespace ErgoNames.Api
             {
                 options.AddPolicy("BasicAuthentication", new AuthorizationPolicyBuilder("BasicAuthentication").RequireAuthenticatedUser().Build());
             });
-
+            services.AddCors();
             services.AddControllers();
             services.AddControllersWithViews();
         }
@@ -67,6 +67,12 @@ namespace ErgoNames.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
 
             app.UseAuthorization();
 
