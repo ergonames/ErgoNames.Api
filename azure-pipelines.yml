@@ -24,12 +24,6 @@ steps:
     feedsToUse: 'select'
     vstsFeed: '7a124f36-f58f-4fba-83fa-320bd1c605a7'
 
-- task: Npm@1
-  displayName: Portal NPM
-  inputs:
-    command: 'install'
-    workingDir: 'source/ErgoNodeSpyder.Portal'
-
 - task: VersionDotNetCoreAssemblies@2
   displayName: 'Update version'
   inputs:
@@ -43,13 +37,6 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: Run Tests
-  inputs:
-    command: 'test'
-    projects: 'tests/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --filter TestCategory!=Local'
-    testRunTitle: 'Unit tests'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish Web Projects'
@@ -57,11 +44,4 @@ steps:
     command: 'publish'
     publishWebProjects: true
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'  
-
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish API'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\ErgoNode.Api.zip'
-    ArtifactName: API
  
