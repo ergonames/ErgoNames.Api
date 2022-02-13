@@ -4,10 +4,10 @@ namespace ErgoNames.Api.Models.Responses
 {
     public class ErgoWalletResponse
     {
-        [JsonPropertyName("source_name")]
-        public string? SourceName { get; set; }
+        [JsonPropertyName("ergo_name")]
+        public string? ErgoName { get; set; }
 
         [JsonPropertyName("ergo")]
-        public string? Ergo { get; set; }
+        public string? ErgoWalletAddress { get; set; }
     }
 }
