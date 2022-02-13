@@ -30,6 +30,7 @@ namespace ErgoNames.Api.Controllers
             {
                 var token = await tokenResolver.ResolveTokenNameToAddressAsync(name);
                 ErgoWalletResponse response = new();
+                response.SourceName = name.ToLowerInvariant();
                 response.Ergo = token;
 
                 return Ok(response);
