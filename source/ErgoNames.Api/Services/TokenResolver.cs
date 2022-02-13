@@ -22,6 +22,7 @@ namespace ErgoNames.Api.Services
         public async Task<string?> ResolveTokenNameToAddressAsync(string tokenName)
         {
             if (string.IsNullOrEmpty(tokenName)) return null;
+            logger.LogInformation("Beginning resolve for name {Name}", tokenName);
 
             var parallelOptions = new ParallelOptions
             {

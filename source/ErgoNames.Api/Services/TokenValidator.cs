@@ -6,10 +6,12 @@ namespace ErgoNames.Api.Services
     public class TokenValidator : ITokenValidator
     {
         private readonly IErgoExplorerClient explorerClient;
+        private readonly ILogger<TokenValidator> logger;
 
-        public TokenValidator(IErgoExplorerClient explorerClient)
+        public TokenValidator(IErgoExplorerClient explorerClient, ILogger<TokenValidator> logger)
         {
             this.explorerClient = explorerClient;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<ExplorerAssetResponse>> SearchTokenByNameAsync(string tokenName)
@@ -41,8 +43,10 @@ namespace ErgoNames.Api.Services
         public async Task<string?> ResolveTokenAddressAsync(ExplorerAssetResponse token)
         {
             var unspentBoxUri = $"boxes/unspent/byTokenId/{token.Id}";
-            var unspentBox = await explorerClient.GetAsync<ExplorerResponseWrapper<ExplorerBoxResponse>>(unspentBoxUri);
-            var holderAddress = unspentBox.Items != null && unspentBox.Items.Any() ? unspentBox.Items.First().Address : null;
+            logger.LogDebug("Querying uri {uri} to resolve unspent boxes for token Id {id}", unspentBoxUri, token.Id);
+            ExplorerResponseWrapper<ExplorerBoxResponse> unspentBox = await explorerClient.GetAsync<ExplorerResponseWrapper<ExplorerBoxResponse>>(unspentBoxUri);
+            logger.LogDebug("{Count} unspent boxes found for token Id {Id}", unspentBox.Items?.Count(), token.Id);
+            string? holderAddress = unspentBox.Items != null && unspentBox.Items.Any() ? unspentBox.Items.First().Address : null;
             return holderAddress;
         }
 
